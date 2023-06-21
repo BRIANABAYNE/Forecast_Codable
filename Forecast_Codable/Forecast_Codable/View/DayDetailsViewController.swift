@@ -6,6 +6,7 @@
 //
 
 import UIKit
+@available(iOS 16.0, *)
 
 class DayDetailsViewController: UIViewController {
     
@@ -19,15 +20,19 @@ class DayDetailsViewController: UIViewController {
     
     //MARK: - Properties
     var days: [Day] = []
-    
-    var forcastData = TopLevelDictonary?
+    var forcastData: TopLevelDictonary?
     
     //MARK: - View Lifecyle
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        
+        dayForcastTableView.dataSource = self
+        
         NetworkContoller.fetchDays { forcastData in
             guard let forcastData = forcastData else {return}
-            self.days = forcastData
+            self.days = forcastData.days
+            self.forcastData = forcastData
             DispatchQueue.main.async {
                 self.dayForcastTableView.reloadData()
                 self.updateViews()
@@ -35,7 +40,7 @@ class DayDetailsViewController: UIViewController {
         }
     }
     
-    func updateViews() {
+    func updateViews() { // don't the instructions for this part?? 
         let day = days[0]
         cityNameLabel.text = "\(day.cityName)"
         currentTempLabel.text = "\(day.temp)"
@@ -46,6 +51,8 @@ class DayDetailsViewController: UIViewController {
 }
 
 //MARK: - Extenstions
+
+@available(iOS 16.0, *)
 extension DayDetailsViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return days.count
@@ -53,6 +60,8 @@ extension DayDetailsViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "dayC3ll", for: indexPath) as? DayForcastTableViewCell else {return UITableViewCell()}
+        let day = days[indexPath.row]
+        cell.updateViews(day: day)
         
         return cell
     }
