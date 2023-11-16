@@ -12,18 +12,14 @@ struct TopLevelDictonary: Decodable {
     private enum CodingKeys: String, CodingKey {
         case cityName = "city_name"
         case days = "data"
-        
     }
     
     let days: [Day]
     let cityName: String
-    
 }
 
 struct Day: Decodable {
-    
     private enum CodingKeys: String, CodingKey {
-        
         case temp
         case highTemp = "high_temp"
         case lowTemp = "low_temp"

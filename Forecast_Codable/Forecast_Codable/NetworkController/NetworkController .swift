@@ -12,9 +12,8 @@ struct NetworkContoller {
     
     static func fetchDays(completion: @escaping (TopLevelDictonary?) -> Void) {
         
-        guard let baseURL = URL(string: "https://api.weatherbit.io/v2.0") else {completion(nil);return }
-        
-        let dailyURL = baseURL.appending(path:"/forecast/daily"), resolvingAgainstBaseURL: true;)
+        guard let baseURL = URL(string: "https://api.weatherbit.io/v2.0") else {return }
+        let dailyURL = baseURL.appending(path:"/forecast/daily")
         var urlComponents = URLComponents(url: dailyURL, resolvingAgainstBaseURL: true)
         let apiQuery = URLQueryItem(name: "key", value: "155585ef583b4c8ba5f6da56c96916ce")
         let cityQuery = URLQueryItem(name: "city", value: "Salt Lake City")
@@ -22,39 +21,25 @@ struct NetworkContoller {
         urlComponents?.queryItems = [apiQuery,cityQuery,unitsQuery]
         guard let finalURL = urlComponents?.url else {completion(nil); return}
         
-    }
+        URLSession.shared.dataTask(with: finalURL) { dayData, _, error in
+            if let error  = error {
+                print("There was an error fetching the data. The url is\(finalURL)", error.localizedDescription)
+                completion(nil)
+            }
+            guard let dataData = dayData else {
+                print("There was an error checking for Data.")
+                completion(nil)
+                return }
+            do {
+                let topLevelDictonary = try
+                        JSONDecoder().decode(TopLevelDictonary.self, from: dataData)
+                completion(topLevelDictonary)
     
-    // data task
-    URLSession.shared.dataTask(with: finalURL) { dayData, _, error in
-        if let error {
-            print("There was an error fetching the data. The url is\(finalURL)", error.localizedDescription)
-            completion(nil); return
+            } catch {
+                print("Error in Do/Try/Catch", error.localizedDescription)
+                completion(nil); return
+            }
             
-        } // decode the data
-        guard let data = data else {completion(nil); return }
-        
-        do {
-            let topLevelDictonary = try
-            JSONDecoder().decode(topLevelDictonary.self,from: data)
-        } catch {
-            print("Error in Do/Try/Catch", error.localizedDescription)
-            completion(nil); return
-        }
-    
-        
-    }.resume()
-    
-    
-    
-    
-    
-    
-    
+        }.resume()
+    }
 }
-
-
-
-
-
-
-

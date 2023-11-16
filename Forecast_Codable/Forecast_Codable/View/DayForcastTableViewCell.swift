@@ -13,6 +13,8 @@ class DayForcastTableViewCell: UITableViewCell {
     @IBOutlet weak var iconImageView: UIImageView!
     @IBOutlet weak var forcastedHighLabel: UILabel!
     
+   
+    // MARK: - Methods
     func updateViews(day: Day) {
         dayNameLabel.text = day.validDate
         forcastedHighLabel.text = "\(day.highTemp)"

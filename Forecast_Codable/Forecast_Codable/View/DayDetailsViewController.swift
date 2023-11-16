@@ -21,12 +21,12 @@ class DayDetailsViewController: UIViewController {
     //MARK: - Properties
     var days: [Day] = []
     var forcastData: TopLevelDictonary?
+    var weather: Weather?
     
     //MARK: - View Lifecyle
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        
+    
         dayForcastTableView.dataSource = self
         
         NetworkContoller.fetchDays { forcastData in
@@ -40,13 +40,15 @@ class DayDetailsViewController: UIViewController {
         }
     }
     
-    func updateViews() { // don't the instructions for this part?? 
+    func updateViews() {
         let day = days[0]
-        cityNameLabel.text = "\(day.cityName)"
+        let forcast = forcastData
+        let weatherDetails = weather
+        cityNameLabel.text = forcast?.cityName
         currentTempLabel.text = "\(day.temp)"
         currentHighLabel.text = "\(day.highTemp)"
         currentLowLabel.text = "\(day.lowTemp)"
-        currentDescriptionLabel.text = day.description
+        currentDescriptionLabel.text = weather?.description
     }
 }
 
